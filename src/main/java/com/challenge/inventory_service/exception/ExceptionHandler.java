@@ -3,12 +3,11 @@ package com.challenge.inventory_service.exception;
 import com.challenge.inventory_service.dto.GeneralApiExceptionResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class GeneralExceptionHandler {
+public class ExceptionHandler {
 
-    @ExceptionHandler(GeneralException.class)
+    @org.springframework.web.bind.annotation.ExceptionHandler(GeneralException.class)
     public ResponseEntity<Object> handleApiGeneralException(GeneralException ex) {
         return ResponseEntity
             .status(ex.getStatusCode())

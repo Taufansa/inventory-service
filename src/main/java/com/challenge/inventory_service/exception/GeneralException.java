@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class GeneralException extends RuntimeException {
     private final int statusCode;
     private final String responseCode;
@@ -29,11 +28,11 @@ public class GeneralException extends RuntimeException {
         this.traceId = MDC.get("traceId");
     }
 
-    public GeneralException(String message) {
+    public GeneralException(String message, String referenceNumber) {
         this.message = message;
         this.statusCode = HttpStatus.BAD_GATEWAY.value();
         this.responseCode = ResponseCodeConstants.RESPONSE_CODE_GENERAL_ERROR;
-        this.referenceNumber = null;
+        this.referenceNumber = referenceNumber;
         this.traceId = MDC.get("traceId");
     }
 

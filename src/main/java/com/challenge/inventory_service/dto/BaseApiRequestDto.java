@@ -1,11 +1,21 @@
 package com.challenge.inventory_service.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import jakarta.persistence.MappedSuperclass;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
-@Data
-@Builder
-public class BaseApiRequestDto {
+@MappedSuperclass
+@AllArgsConstructor
+@NoArgsConstructor
+@SuperBuilder
+@Getter
+@Setter
+@ToString
+public abstract class BaseApiRequestDto {
 
     private String referenceNumber;
     

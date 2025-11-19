@@ -7,10 +7,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 public class Variant extends BaseModel {
 
     @Id
@@ -35,7 +35,7 @@ public class Variant extends BaseModel {
     private String variantColor;
 
     @Column(name = "variant_size")
-    private Integer variantSize;
+    private String variantSize;
 
     @Column(name = "variant_weight")
     private Integer variantWeight;
