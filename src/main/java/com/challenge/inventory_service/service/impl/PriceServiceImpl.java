@@ -1,0 +1,43 @@
+package com.challenge.inventory_service.service.impl;
+
+import com.challenge.inventory_service.dto.request.PriceRequestDto;
+import com.challenge.inventory_service.exception.GeneralException;
+import com.challenge.inventory_service.model.Price;
+import com.challenge.inventory_service.repository.PriceRepository;
+import com.challenge.inventory_service.service.PriceService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@Slf4j
+public class PriceServiceImpl implements PriceService {
+
+    private final PriceRepository priceRepository;
+
+    public PriceServiceImpl(PriceRepository priceRepository) {
+
+        this.priceRepository = priceRepository;
+
+    }
+
+    @Transactional
+    @Override
+    public Price savePrice(PriceRequestDto priceRequestDto, Long variantId, String referenceNumber) {
+
+        try {
+
+            log.info("Saving price for variant id {} with request {} and reference {}" ,variantId, priceRequestDto, referenceNumber);
+
+            return priceRepository.saveAndFlush(Price.builder().variantId(variantId).price(priceRequestDto.getPrice()).currency(priceRequestDto.getCurrency()).build());
+
+        } catch (Exception e) {
+
+            log.error("error when saving price with error: {}", e.getMessage());
+
+            throw new GeneralException(e.getMessage(), referenceNumber);
+
+        }
+
+    }
+}
