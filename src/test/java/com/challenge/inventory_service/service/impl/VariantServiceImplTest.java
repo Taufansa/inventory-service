@@ -25,6 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -157,5 +158,48 @@ class VariantServiceImplTest {
         }
 
         Assertions.assertNotNull(e);
+    }
+
+    @Test
+    void successGetVariantByItemId() {
+
+        Mockito.when(variantRepository.findAllByItemId(Mockito.anyLong())).thenReturn(List.of(Variant.builder().id(1L).itemId(1L).variantName("Kobe Bryant 24").variantSize("XL").variantColor("Black").variantWeight(100).createdAt(new Date()).createdBy("ADMIN").build()));
+        Mockito.when(priceService.getPrice(ArgumentMatchers.anyLong())).thenReturn(Optional.of(Price.builder().id(1L).variantId(1L).price(BigDecimal.valueOf(150000L)).currency("IDR").createdAt(new Date()).createdBy("ADMIN").build()));
+        Mockito.when(stockService.getStock(ArgumentMatchers.anyLong())).thenReturn(Optional.of(Stock.builder().id(1L).variantId(1L).available(100L).book(0L).sold(0L).createdAt(new Date()).createdBy("ADMIN").build()));
+
+        List<VariantResponseDto> result = variantService.getVariantByItemId(1L);
+
+        Assertions.assertEquals(1, result.size());
+
+    }
+
+    @Test
+    void successGetVariantByItemIdButReturnEmpty() {
+
+        Mockito.when(variantRepository.findAllByItemId(Mockito.anyLong())).thenReturn(List.of());
+
+        List<VariantResponseDto> result = variantService.getVariantByItemId(1L);
+
+        Assertions.assertEquals(0, result.size());
+
+    }
+
+    @Test
+    void failedGetVariantByItemId() {
+
+        Mockito.when(variantRepository.findAllByItemId(Mockito.anyLong())).thenThrow(RuntimeException.class);
+
+        Exception e = null;
+
+        try {
+
+            variantService.getVariantByItemId(1L);
+
+        } catch (Exception ex) {
+            e = ex;
+        }
+
+        Assertions.assertNotNull(e);
+
     }
 }

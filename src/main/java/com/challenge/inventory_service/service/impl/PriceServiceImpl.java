@@ -3,14 +3,12 @@ package com.challenge.inventory_service.service.impl;
 import com.challenge.inventory_service.dto.request.PriceRequestDto;
 import com.challenge.inventory_service.exception.GeneralException;
 import com.challenge.inventory_service.model.Price;
-import com.challenge.inventory_service.model.Stock;
 import com.challenge.inventory_service.repository.PriceRepository;
 import com.challenge.inventory_service.service.PriceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service

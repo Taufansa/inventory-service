@@ -24,6 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @ExtendWith(MockitoExtension.class)
@@ -154,6 +155,52 @@ class ItemServiceImplTest {
             itemService.createItem(request);
 
         } catch (Exception ex) {
+
+            e = ex;
+
+        }
+
+        Assertions.assertNotNull(e);
+
+    }
+
+    @Test
+    void successGetItem() {
+
+        Mockito.when(itemRepository.findById(1L)).thenReturn(Optional.of(Item.builder().id(1L).itemName("T-Shirt Nike").itemDescription("T-Shirt dengan bahan kualitas baik").itemCategory("Pakaian Pria").itemSku("1872GNC0").createdAt(new Date()).createdBy("ADMIN").build()));
+        Mockito.when(variantService.getVariantByItemId(1L)).thenReturn(List.of(VariantResponseDto.builder().variant(Variant.builder().id(1L).itemId(1L).variantName("Kobe Bryant 24").variantSize("XL").variantColor("Black").variantWeight(100).createdAt(new Date()).createdBy("ADMIN").build()).stock(Stock.builder().id(1L).variantId(1L).available(100L).book(0L).sold(0L).createdAt(new Date()).createdBy("ADMIN").build()).price(Price.builder().id(1L).variantId(1L).price(BigDecimal.valueOf(150000L)).currency("IDR").createdAt(new Date()).createdBy("ADMIN").build()).build()));
+
+        ItemResponse result = itemService.getItem(1L);
+
+        Assertions.assertNotNull(result.getItem());
+        Assertions.assertEquals(1, result.getVariants().size());
+
+    }
+
+    @Test
+    void successGetItemButWithEmptyResult() {
+
+        Mockito.when(itemRepository.findById(1L)).thenReturn(Optional.empty());
+
+        ItemResponse result = itemService.getItem(1L);
+
+        Assertions.assertNull(result.getItem());
+        Assertions.assertEquals(0, result.getVariants().size());
+
+    }
+
+    @Test
+    void failedGetItem() {
+
+        Mockito.when(itemRepository.findById(1L)).thenThrow(RuntimeException.class);
+
+        Exception e = null;
+
+        try {
+
+            itemService.getItem(1L);
+
+        }  catch (Exception ex) {
 
             e = ex;
 

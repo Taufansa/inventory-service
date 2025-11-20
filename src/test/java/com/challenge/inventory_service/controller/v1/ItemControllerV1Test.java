@@ -11,14 +11,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class ItemControllerV1Test {
 
@@ -71,11 +70,11 @@ class ItemControllerV1Test {
                 .referenceNumber(UUID.randomUUID().toString())
                 .build();
 
-        mockMvc.perform(post("/v1/item/save")
+        mockMvc.perform(MockMvcRequestBuilders.post("/v1/item/save")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(request))
                 )
-                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
 
@@ -88,12 +87,26 @@ class ItemControllerV1Test {
         ItemControllerV1 controller = new ItemControllerV1(itemService);
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
 
-        mockMvc.perform(post("/v1/item/save")
+        mockMvc.perform(MockMvcRequestBuilders.post("/v1/item/save")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                 )
-                .andExpect(status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
 
+    }
+
+    @Test
+    void getItem() throws Exception {
+
+        ItemServiceImpl itemService = Mockito.mock(ItemServiceImpl.class);
+        ItemControllerV1 controller = new ItemControllerV1(itemService);
+        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/item/1")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                )
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
 
     }
 }

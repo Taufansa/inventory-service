@@ -3,7 +3,6 @@ package com.challenge.inventory_service.service.impl;
 import com.challenge.inventory_service.dto.request.PriceRequestDto;
 import com.challenge.inventory_service.model.Price;
 import com.challenge.inventory_service.repository.PriceRepository;
-import com.challenge.inventory_service.service.PriceService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,9 +13,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class PriceServiceImplTest {
@@ -73,5 +72,46 @@ class PriceServiceImplTest {
         }
 
         Assertions.assertNotNull(e);
+    }
+
+    @Test
+    void successGetPrice() {
+
+        Mockito.when(priceRepository.findByVariantId(ArgumentMatchers.anyLong())).thenReturn(Optional.of(Price.builder().id(1L).variantId(1L).price(BigDecimal.valueOf(150000L)).currency("IDR").createdBy("ADMIN").createdAt(new Date()).build()));
+        Optional<Price> price = priceService.getPrice(1L);
+
+        Assertions.assertTrue(price.isPresent());
+
+    }
+
+    @Test
+    void successGetPriceButWithEmptyResult() {
+
+        Mockito.when(priceRepository.findByVariantId(ArgumentMatchers.anyLong())).thenReturn(Optional.empty());
+        Optional<Price> price = priceService.getPrice(1L);
+
+        Assertions.assertFalse(price.isPresent());
+
+    }
+
+    @Test
+    void failedGetPrice() {
+
+        Mockito.when(priceRepository.findByVariantId(ArgumentMatchers.anyLong())).thenThrow(new RuntimeException());
+
+        Exception e = null;
+
+        try {
+
+            priceService.getPrice(1L);
+
+        } catch (Exception ex) {
+
+            e = ex;
+
+        }
+
+        Assertions.assertNotNull(e);
+
     }
 }
