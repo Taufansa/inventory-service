@@ -1,6 +1,7 @@
 package com.challenge.inventory_service.service.impl;
 
 import com.challenge.inventory_service.dto.request.CreateItemRequest;
+import com.challenge.inventory_service.dto.request.UpdateItemRequest;
 import com.challenge.inventory_service.dto.response.VariantResponseDto;
 import com.challenge.inventory_service.exception.GeneralException;
 import com.challenge.inventory_service.model.Item;
@@ -11,6 +12,7 @@ import com.challenge.inventory_service.repository.VariantRepository;
 import com.challenge.inventory_service.service.PriceService;
 import com.challenge.inventory_service.service.StockService;
 import com.challenge.inventory_service.service.VariantService;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -132,6 +134,31 @@ public class VariantServiceImpl implements VariantService {
             throw new GeneralException(e.getMessage());
 
         }
+    }
+
+    @Synchronized
+    @Transactional
+    @Override
+    public List<VariantResponseDto> updateVariant(UpdateItemRequest updateItemRequest) {
+
+        try {
+
+            log.info("Updating variant by request {}", updateItemRequest);
+            updateItemRequest.getVariants().forEach(variant -> {
+                variantRepository.saveAndFlush(variant.getVariant());
+                stockService.updateStock(variant.getStock(), updateItemRequest.getReferenceNumber());
+                priceService.updatePrice(variant.getPrice(), updateItemRequest.getReferenceNumber());
+            });
+
+            return getVariantByItemId(updateItemRequest.getItem().getId());
+
+        } catch (Exception e) {
+
+            log.error("error when updating variant with request {} and got error {} with reference number {}", updateItemRequest, e.getMessage(), updateItemRequest.getReferenceNumber());
+            throw new GeneralException(e.getMessage());
+
+        }
+
     }
 
 }

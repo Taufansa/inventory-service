@@ -10,5 +10,6 @@ public interface StockService {
     Stock saveStock(StockRequestDto stockRequestDto, Long variantId, String referenceNumber);
     Optional<Stock> getStock(Long variantId);
     void deleteStock(Long variantId);
+    Stock updateStock(Stock stock, String referenceNumber);
 
 }

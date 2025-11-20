@@ -1,6 +1,7 @@
 package com.challenge.inventory_service.service.impl;
 
 import com.challenge.inventory_service.dto.request.CreateItemRequest;
+import com.challenge.inventory_service.dto.request.UpdateItemRequest;
 import com.challenge.inventory_service.dto.response.ItemResponse;
 import com.challenge.inventory_service.dto.response.VariantResponseDto;
 import com.challenge.inventory_service.exception.GeneralException;
@@ -117,5 +118,26 @@ public class ItemServiceImpl implements ItemService {
             throw new GeneralException(e.getMessage());
 
         }
+    }
+
+    @Override
+    public ItemResponse updateItem(UpdateItemRequest updateItemRequest) {
+
+        try {
+
+            log.info("start update item with request: {}", updateItemRequest);
+            Item updatedItem = itemRepository.saveAndFlush(updateItemRequest.getItem());
+            log.info("result updating item with id {} is {}", updatedItem.getId(), updatedItem);
+            variantService.updateVariant(updateItemRequest);
+
+            return getItem(updateItemRequest.getItem().getId());
+
+        } catch (Exception e) {
+
+            log.error("error when update item with request {} and got error {}", updateItemRequest, e.getMessage());
+            throw new GeneralException(e.getMessage());
+
+        }
+
     }
 }

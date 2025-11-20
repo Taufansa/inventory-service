@@ -1,10 +1,12 @@
 package com.challenge.inventory_service.controller.v1;
 
 import com.challenge.inventory_service.dto.request.CreateItemRequest;
+import com.challenge.inventory_service.dto.request.UpdateItemRequest;
 import com.challenge.inventory_service.dto.response.ItemResponse;
 import com.challenge.inventory_service.service.ItemService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,6 +44,13 @@ public class ItemControllerV1 {
 
         itemService.deleteItem(itemId);
         return "Item deleted";
+
+    }
+
+    @PatchMapping("/update")
+    public ItemResponse updateItem(@RequestBody UpdateItemRequest updateItemRequest) {
+
+        return itemService.updateItem(updateItemRequest);
 
     }
 

@@ -5,6 +5,7 @@ import com.challenge.inventory_service.exception.GeneralException;
 import com.challenge.inventory_service.model.Stock;
 import com.challenge.inventory_service.repository.StockRepository;
 import com.challenge.inventory_service.service.StockService;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -88,5 +89,22 @@ public class StockServiceImpl implements StockService {
 
         }
 
+    }
+
+    @Synchronized
+    @Transactional
+    @Override
+    public Stock updateStock(Stock stock, String referenceNumber) {
+        try {
+
+            log.info("Updating stock {} with reference {}", stock, referenceNumber);
+            return stockRepository.saveAndFlush(stock);
+
+        } catch (Exception e) {
+
+            log.error("error when updating stock {} with error {} and reference number {}", stock, e.getMessage(), referenceNumber);
+            throw new GeneralException(e.getMessage());
+
+        }
     }
 }

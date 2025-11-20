@@ -5,6 +5,7 @@ import com.challenge.inventory_service.exception.GeneralException;
 import com.challenge.inventory_service.model.Price;
 import com.challenge.inventory_service.repository.PriceRepository;
 import com.challenge.inventory_service.service.PriceService;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,6 +83,25 @@ public class PriceServiceImpl implements PriceService {
             throw new GeneralException(e.getMessage());
 
         }
+    }
+
+    @Synchronized
+    @Transactional
+    @Override
+    public Price updatePrice(Price price, String referenceNumber) {
+
+        try {
+
+            log.info("start update price {} with reference {}" , price, referenceNumber);
+            return priceRepository.saveAndFlush(price);
+
+        } catch (Exception e) {
+
+            log.error("error when updating price {} with error {} and reference number {}", price, e.getMessage(), referenceNumber);
+            throw new GeneralException(e.getMessage());
+
+        }
+
     }
 
 }
