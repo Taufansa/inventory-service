@@ -46,7 +46,7 @@ public class VariantServiceImpl implements VariantService {
 
             request.getVariants().forEach(
                     variant -> {
-                        Variant savedVariant = variantRepository.save(Variant.builder()
+                        Variant savedVariant = variantRepository.saveAndFlush(Variant.builder()
                                         .itemId(item.getId())
                                         .variantName(variant.getVariantName())
                                         .variantColor(variant.getVariantColor())
