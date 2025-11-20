@@ -65,4 +65,23 @@ public class PriceServiceImpl implements PriceService {
         }
 
     }
+
+    @Transactional
+    @Override
+    public void deletePrice(Long variantId) {
+        try {
+
+            log.info("Start deleting price for variant id {}" , variantId);
+            Optional<Price> prices = priceRepository.findByVariantId(variantId);
+            prices.ifPresent(priceRepository::delete);
+            log.info("Finish deleting price for variant id {} with result {}" , variantId, prices);
+
+        } catch (Exception e) {
+
+            log.error("error when deleting price for variant id {} with error {}" , variantId, e.getMessage());
+            throw new GeneralException(e.getMessage());
+
+        }
+    }
+
 }

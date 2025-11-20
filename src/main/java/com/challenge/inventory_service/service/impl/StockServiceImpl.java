@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -63,6 +62,27 @@ public class StockServiceImpl implements StockService {
         } catch (Exception e) {
 
             log.error("error when finding stock for variant {} with error {}", variantId,  e.getMessage());
+
+            throw new GeneralException(e.getMessage());
+
+        }
+
+    }
+
+    @Transactional
+    @Override
+    public void deleteStock(Long variantId) {
+
+        try {
+
+            log.info("Deleting stock for variant id {}", variantId);
+            Optional<Stock> stock = stockRepository.findByVariantId(variantId);
+            stock.ifPresent(stockRepository::delete);
+            log.info("Deleted stock for variant id {} with result {}", variantId, stock);
+
+        } catch (Exception e) {
+
+            log.error("error when deleting stock for variant id {} with error {}", variantId, e.getMessage());
 
             throw new GeneralException(e.getMessage());
 

@@ -97,4 +97,25 @@ public class ItemServiceImpl implements ItemService {
         }
 
     }
+
+    @Transactional
+    @Override
+    public void deleteItem(Long id) {
+        try {
+
+            log.info("start delete item with id: {}", id);
+            Optional<Item> item = itemRepository.findById(id);
+            if (item.isPresent()) {
+                variantService.deleteVariant(item.get().getId());
+                itemRepository.delete(item.get());
+            }
+            log.info("result deleting item with id {} is {}", id, item);
+
+        } catch (Exception e) {
+
+            log.error("error when delete item with id {} and error is {}", id, e.getMessage());
+            throw new GeneralException(e.getMessage());
+
+        }
+    }
 }

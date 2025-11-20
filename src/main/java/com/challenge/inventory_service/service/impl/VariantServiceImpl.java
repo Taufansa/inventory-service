@@ -113,4 +113,25 @@ public class VariantServiceImpl implements VariantService {
 
     }
 
+    @Transactional
+    @Override
+    public void deleteVariant(Long itemId) {
+        try {
+
+            log.info("Deleting variant by itemId: {}", itemId);
+            List<Variant> variants = variantRepository.findAllByItemId(itemId);
+            variants.forEach(variant -> {
+                priceService.deletePrice(variant.getId());
+                stockService.deleteStock(variant.getId());
+            });
+            log.info("Deleted variant by item id {} is {}", itemId, variants);
+
+        } catch (Exception e) {
+
+            log.error("error when deleting variant with item id {} with error {}", itemId, e.getMessage());
+            throw new GeneralException(e.getMessage());
+
+        }
+    }
+
 }

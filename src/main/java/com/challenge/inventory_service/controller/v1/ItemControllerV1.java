@@ -3,6 +3,7 @@ package com.challenge.inventory_service.controller.v1;
 import com.challenge.inventory_service.dto.request.CreateItemRequest;
 import com.challenge.inventory_service.dto.response.ItemResponse;
 import com.challenge.inventory_service.service.ItemService;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +34,14 @@ public class ItemControllerV1 {
     public ItemResponse getItem(@PathVariable("id") Long itemId) {
 
         return itemService.getItem(itemId);
+
+    }
+
+    @DeleteMapping("/destroy")
+    public String deleteItem(@PathVariable("id") Long itemId) {
+
+        itemService.deleteItem(itemId);
+        return "Item deleted";
 
     }
 

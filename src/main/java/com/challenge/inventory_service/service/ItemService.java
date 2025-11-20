@@ -7,5 +7,6 @@ public interface ItemService {
 
     ItemResponse createItem(CreateItemRequest createItemRequest);
     ItemResponse getItem(Long id);
+    void deleteItem(Long id);
 
 }

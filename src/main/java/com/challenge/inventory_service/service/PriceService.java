@@ -9,4 +9,5 @@ public interface PriceService {
 
     Price savePrice(PriceRequestDto priceRequestDto, Long variantId, String referenceNumber);
     Optional<Price> getPrice(Long variantId);
+    void deletePrice(Long variantId);
 }

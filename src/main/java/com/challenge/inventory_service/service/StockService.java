@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface StockService {
 
     Stock saveStock(StockRequestDto stockRequestDto, Long variantId, String referenceNumber);
-
     Optional<Stock> getStock(Long variantId);
+    void deleteStock(Long variantId);
 
 }
