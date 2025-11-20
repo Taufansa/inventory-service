@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class CreateItemResponse extends BaseApiResponseDto {
+public class ItemResponse extends BaseApiResponseDto {
 
     private Item item;
     private List<VariantResponseDto> variants;

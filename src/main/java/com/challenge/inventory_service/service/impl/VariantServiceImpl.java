@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -74,6 +75,42 @@ public class VariantServiceImpl implements VariantService {
         }
 
         return result;
+    }
+
+    @Override
+    public List<VariantResponseDto> getVariantByItemId(Long itemId) {
+
+        try {
+
+            log.info("Getting variant by itemId: {}", itemId);
+
+            List<VariantResponseDto> result = new ArrayList<>();
+
+            List<Variant> variants = variantRepository.findAllByItemId(itemId);
+
+            log.info("result getting variants by itemId {} with result: {}", itemId, variants );
+
+            variants.forEach(variant -> {
+
+                Optional<Price> price = priceService.getPrice(variant.getId());
+                Optional<Stock> stock = stockService.getStock(variant.getId());
+
+                result.add(VariantResponseDto.builder().variant(variant).price(price.orElse(null)).stock(stock.orElse(null)).build());
+
+            });
+
+            log.info("result getting variants of item id {} is {}", itemId, result);
+
+            return result;
+
+        } catch (Exception e) {
+
+            log.error("error when get variant by item id {} with error: {}", itemId, e.getMessage());
+
+            throw new GeneralException(e.getMessage());
+
+        }
+
     }
 
 }

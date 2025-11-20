@@ -36,6 +36,14 @@ public class GeneralException extends RuntimeException {
         this.traceId = MDC.get("traceId");
     }
 
+    public GeneralException(String message) {
+        this.message = message;
+        this.statusCode = HttpStatus.BAD_GATEWAY.value();
+        this.responseCode = ResponseCodeConstants.RESPONSE_CODE_GENERAL_ERROR;
+        this.referenceNumber = null;
+        this.traceId = MDC.get("traceId");
+    }
+
     @Override
     public String getMessage() {
         return message;

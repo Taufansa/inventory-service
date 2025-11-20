@@ -5,32 +5,28 @@ import com.challenge.inventory_service.dto.request.ItemRequestDto;
 import com.challenge.inventory_service.dto.request.PriceRequestDto;
 import com.challenge.inventory_service.dto.request.StockRequestDto;
 import com.challenge.inventory_service.dto.request.VariantRequestDto;
-import com.challenge.inventory_service.service.ItemService;
 import com.challenge.inventory_service.service.impl.ItemServiceImpl;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class InventoryControllerV1Test {
+class ItemControllerV1Test {
 
     @Test
     void successCreateItem() throws Exception {
 
         ItemServiceImpl itemService = Mockito.mock(ItemServiceImpl.class);
-        InventoryControllerV1 controller = new InventoryControllerV1(itemService);
+        ItemControllerV1 controller = new ItemControllerV1(itemService);
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -75,7 +71,7 @@ class InventoryControllerV1Test {
                 .referenceNumber(UUID.randomUUID().toString())
                 .build();
 
-        mockMvc.perform(post("/v1/save")
+        mockMvc.perform(post("/v1/item/save")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(request))
                 )
@@ -89,10 +85,10 @@ class InventoryControllerV1Test {
     void failedCreateItem() throws Exception {
 
         ItemServiceImpl itemService = Mockito.mock(ItemServiceImpl.class);
-        InventoryControllerV1 controller = new InventoryControllerV1(itemService);
+        ItemControllerV1 controller = new ItemControllerV1(itemService);
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
 
-        mockMvc.perform(post("/v1/save")
+        mockMvc.perform(post("/v1/item/save")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                 )
                 .andExpect(status().isBadRequest())

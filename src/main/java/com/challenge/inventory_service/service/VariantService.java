@@ -8,5 +8,6 @@ import java.util.List;
 public interface VariantService {
 
     List<VariantResponseDto> addVariant(CreateItemRequest request, Item item);
+    List<VariantResponseDto> getVariantByItemId(Long itemId);
 
 }

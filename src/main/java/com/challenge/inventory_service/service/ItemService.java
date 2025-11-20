@@ -1,10 +1,11 @@
 package com.challenge.inventory_service.service;
 
 import com.challenge.inventory_service.dto.request.CreateItemRequest;
-import com.challenge.inventory_service.dto.response.CreateItemResponse;
+import com.challenge.inventory_service.dto.response.ItemResponse;
 
 public interface ItemService {
 
-    CreateItemResponse createItem(CreateItemRequest createItemRequest);
+    ItemResponse createItem(CreateItemRequest createItemRequest);
+    ItemResponse getItem(Long id);
 
 }

@@ -1,7 +1,7 @@
 package com.challenge.inventory_service.service.impl;
 
 import com.challenge.inventory_service.dto.request.CreateItemRequest;
-import com.challenge.inventory_service.dto.response.CreateItemResponse;
+import com.challenge.inventory_service.dto.response.ItemResponse;
 import com.challenge.inventory_service.dto.response.VariantResponseDto;
 import com.challenge.inventory_service.exception.GeneralException;
 import com.challenge.inventory_service.model.Item;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -30,7 +31,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional
     @Override
-    public CreateItemResponse createItem(CreateItemRequest createItemRequest) {
+    public ItemResponse createItem(CreateItemRequest createItemRequest) {
 
         try {
 
@@ -45,7 +46,7 @@ public class ItemServiceImpl implements ItemService {
 
             List<VariantResponseDto> savedVariants = variantService.addVariant(createItemRequest, savedItem);
 
-            return CreateItemResponse.builder()
+            return ItemResponse.builder()
                     .item(savedItem)
                     .variants(savedVariants)
                     .referenceNumber(createItemRequest.getReferenceNumber())
@@ -56,6 +57,42 @@ public class ItemServiceImpl implements ItemService {
             log.error("error when create item with error: {}", e.getMessage());
 
             throw new GeneralException(e.getMessage(), createItemRequest.getReferenceNumber());
+
+        }
+
+    }
+
+    @Override
+    public ItemResponse getItem(Long id) {
+
+        try {
+
+            log.info("start get item with id: {}", id);
+
+            Optional<Item> item = itemRepository.findById(id);
+
+            log.info("result getting item with id {} is {}", id, item);
+
+            if (item.isEmpty()) {
+
+                return ItemResponse.builder()
+                        .item(null)
+                        .variants(List.of())
+                        .build();
+
+            }
+
+            return ItemResponse.builder()
+                    .item(item.get())
+                    .variants(variantService.getVariantByItemId(item.get().getId()))
+                    .build();
+
+
+        } catch (Exception e) {
+
+            log.error("error when get item with id {} and error is {}", id, e.getMessage());
+
+            throw new GeneralException(e.getMessage());
 
         }
 

@@ -5,14 +5,13 @@ import com.challenge.inventory_service.dto.request.ItemRequestDto;
 import com.challenge.inventory_service.dto.request.PriceRequestDto;
 import com.challenge.inventory_service.dto.request.StockRequestDto;
 import com.challenge.inventory_service.dto.request.VariantRequestDto;
-import com.challenge.inventory_service.dto.response.CreateItemResponse;
+import com.challenge.inventory_service.dto.response.ItemResponse;
 import com.challenge.inventory_service.dto.response.VariantResponseDto;
 import com.challenge.inventory_service.model.Item;
 import com.challenge.inventory_service.model.Price;
 import com.challenge.inventory_service.model.Stock;
 import com.challenge.inventory_service.model.Variant;
 import com.challenge.inventory_service.repository.ItemRepository;
-import com.challenge.inventory_service.service.VariantService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,8 +25,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class ItemServiceImplTest {
@@ -93,7 +90,7 @@ class ItemServiceImplTest {
                         VariantResponseDto.builder().variant(Variant.builder().id(2L).itemId(1L).variantName("Kobe Bryant 24").variantColor("White").variantSize("XXL").variantWeight(100).createdAt(new Date()).createdBy("ADMIN").build()).price(Price.builder().id(2L).variantId(1L).price(BigDecimal.valueOf(150000L)).currency("IDR").createdAt(new Date()).createdBy("ADMIN").build()).stock(Stock.builder().id(2L).variantId(1L).available(100L).book(0L).sold(0L).createdAt(new Date()).createdBy("ADMIN").build()).build()
                 ));
 
-        CreateItemResponse result = itemService.createItem(request);
+        ItemResponse result = itemService.createItem(request);
 
         Assertions.assertNotNull(result);
         Assertions.assertEquals(request.getReferenceNumber(), result.getReferenceNumber());

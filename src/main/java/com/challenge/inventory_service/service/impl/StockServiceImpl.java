@@ -9,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @Slf4j
 public class StockServiceImpl implements StockService {
@@ -42,5 +45,28 @@ public class StockServiceImpl implements StockService {
             throw new GeneralException(e.getMessage(), referenceNumber);
 
         }
+    }
+
+    @Override
+    public Optional<Stock> getStock(Long variantId) {
+
+        try {
+
+            log.info("Finding stock for variant id {}", variantId);
+
+            Optional<Stock> stock = stockRepository.findByVariantId(variantId);
+
+            log.info("Returning stock for variant id {} with result {}", variantId, stock);
+
+            return stock;
+
+        } catch (Exception e) {
+
+            log.error("error when finding stock for variant {} with error {}", variantId,  e.getMessage());
+
+            throw new GeneralException(e.getMessage());
+
+        }
+
     }
 }
