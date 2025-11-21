@@ -9,7 +9,6 @@ import com.challenge.inventory_service.model.Stock;
 import com.challenge.inventory_service.service.ItemService;
 import com.challenge.inventory_service.service.OrderService;
 import com.challenge.inventory_service.service.StockService;
-import com.challenge.inventory_service.service.VariantService;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,12 +20,10 @@ import java.util.Objects;
 @Slf4j
 public class OrderServiceImpl implements OrderService {
 
-    private final VariantService variantService;
     private final ItemService itemService;
     private final StockService stockService;
 
-    public OrderServiceImpl(VariantService variantService, ItemService itemService, StockService stockService) {
-        this.variantService = variantService;
+    public OrderServiceImpl(ItemService itemService, StockService stockService) {
         this.itemService = itemService;
         this.stockService = stockService;
     }
@@ -42,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
 
             ItemResponse item = itemService.getItem(orderRequest.getItemId());
 
-            if (Objects.isNull(item)) {
+            if (Objects.isNull(item.getItem())) {
 
                 log.info("Item not found");
                 throw new OrderException(ResponseCodeConstants.RESPONSE_DESC_ORDER_ITEM_NOT_FOUND, orderRequest.getReferenceNumber());
@@ -83,6 +80,10 @@ public class OrderServiceImpl implements OrderService {
 
                     log.info("Order State is {}", orderRequest.getState());
 
+                    if (variant.getStock().getBook().equals(0L)) {
+                        throw new OrderException(ResponseCodeConstants.RESPONSE_DESC_BOOKING_NOT_FOUND, orderRequest.getReferenceNumber());
+                    }
+
                     Stock updatedStock = stockService.updateStock(
                             Stock.builder()
                                     .id(variant.getStock().getId())
@@ -104,8 +105,8 @@ public class OrderServiceImpl implements OrderService {
 
         } catch (Exception e) {
 
-            log.error("error when updating variant with request {} and got error {} with reference number {}", orderRequest, e.getMessage(), orderRequest.getReferenceNumber());
-            throw new GeneralException(e.getMessage());
+            log.error("error when process order with request {} and got error {} with reference number {}", orderRequest, e.getMessage(), orderRequest.getReferenceNumber());
+            throw new GeneralException(e.getMessage(), orderRequest.getReferenceNumber());
 
         }
     }

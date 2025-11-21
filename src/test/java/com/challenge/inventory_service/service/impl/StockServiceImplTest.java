@@ -118,5 +118,77 @@ class StockServiceImplTest {
 
     }
 
+    @Test
+    void successDeleteStock() {
 
+        Stock stock = Stock.builder().id(1L).variantId(1L).available(99L).book(1L).sold(0L).createdAt(new Date()).createdBy("SYSTEM").build();
+        Mockito.when(stockRepository.findByVariantId(1L)).thenReturn(Optional.of(stock));
+        Mockito.doNothing().when(stockRepository).delete(stock);
+
+        Exception e = null;
+
+        try {
+
+            stockServiceImpl.deleteStock(1L);
+
+        } catch (Exception ex) {
+
+            e = ex;
+
+        }
+
+        Assertions.assertNull(e);
+
+    }
+
+    @Test
+    void failedDeleteStock() {
+
+        Stock stock = Stock.builder().id(1L).variantId(1L).available(99L).book(1L).sold(0L).createdAt(new Date()).createdBy("SYSTEM").build();
+        Mockito.when(stockRepository.findByVariantId(1L)).thenThrow(RuntimeException.class);
+
+        Exception e = null;
+
+        try {
+
+            stockServiceImpl.deleteStock(1L);
+
+        } catch (Exception ex) {
+
+            e = ex;
+
+        }
+
+        Assertions.assertNotNull(e);
+
+    }
+
+    @Test
+    void successUpdateStock() {
+
+        Stock stock = Stock.builder().id(1L).variantId(1L).available(99L).book(1L).sold(0L).createdAt(new Date()).createdBy("SYSTEM").build();
+        Mockito.when(stockRepository.saveAndFlush(ArgumentMatchers.any(Stock.class))).thenReturn(stock);
+
+        Stock updatedStock = stockServiceImpl.updateStock(stock, UUID.randomUUID().toString());
+
+        Assertions.assertNotNull(updatedStock);
+
+    }
+
+    @Test
+    void failedUpdateStock() {
+
+        Stock stock = Stock.builder().id(1L).variantId(1L).available(99L).book(1L).sold(0L).createdAt(new Date()).createdBy("SYSTEM").build();
+        Mockito.when(stockRepository.saveAndFlush(ArgumentMatchers.any(Stock.class))).thenThrow(RuntimeException.class);
+
+        Exception e = null;
+        try {
+            stockServiceImpl.updateStock(stock, UUID.randomUUID().toString());
+        }  catch (Exception ex) {
+            e = ex;
+        }
+
+        Assertions.assertNotNull(e);
+
+    }
 }

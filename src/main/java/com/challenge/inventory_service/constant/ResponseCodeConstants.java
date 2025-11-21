@@ -16,5 +16,6 @@ public class ResponseCodeConstants {
 	public static final String RESPONSE_DESC_GENERAL_ERROR = "General Error";
 	public static final String RESPONSE_DESC_ORDER_STOCK_NOT_AVAILABLE = "Stock Not Available";
 	public static final String RESPONSE_DESC_ORDER_ITEM_NOT_FOUND = "Item Not Found";
+	public static final String RESPONSE_DESC_BOOKING_NOT_FOUND = "Please Do Book First";
 
 }

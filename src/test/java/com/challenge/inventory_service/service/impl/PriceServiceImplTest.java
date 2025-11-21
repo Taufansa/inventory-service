@@ -114,4 +114,81 @@ class PriceServiceImplTest {
         Assertions.assertNotNull(e);
 
     }
+
+    @Test
+    void successUpdatePrice() {
+
+        Price price = Price.builder().id(1L).variantId(1L).price(BigDecimal.valueOf(10000L)).currency("USD").createdAt(new Date()).createdBy("SYSTEM").build();
+
+        Mockito.when(priceRepository.saveAndFlush(ArgumentMatchers.any(Price.class))).thenReturn(price);
+
+        Price savedPrice = priceService.updatePrice(price, UUID.randomUUID().toString());
+
+        Assertions.assertNotNull(savedPrice);
+
+    }
+
+    @Test
+    void failedUpdatePrice() {
+
+        Price price = Price.builder().id(1L).variantId(1L).price(BigDecimal.valueOf(10000L)).currency("USD").createdAt(new Date()).createdBy("SYSTEM").build();
+
+        Mockito.when(priceRepository.saveAndFlush(ArgumentMatchers.any(Price.class))).thenThrow(new RuntimeException());
+
+        Exception e = null;
+
+        try {
+
+            priceService.updatePrice(price, UUID.randomUUID().toString());
+
+        }  catch (Exception ex) {
+            e = ex;
+        }
+
+        Assertions.assertNotNull(e);
+
+    }
+
+    @Test
+    void successDeletePrice() {
+
+        Price price = Price.builder().id(1L).variantId(1L).price(BigDecimal.valueOf(10000L)).currency("USD").createdAt(new Date()).createdBy("SYSTEM").build();
+
+        Mockito.when(priceRepository.findByVariantId(ArgumentMatchers.anyLong())).thenReturn(Optional.of(price));
+        Mockito.doNothing().when(priceRepository).delete(price);
+
+        Exception e = null;
+        try {
+
+            priceService.deletePrice(1L);
+
+        } catch (Exception ex) {
+
+            e = ex;
+
+        }
+
+        Assertions.assertNull(e);
+    }
+
+    @Test
+    void failedDeletePrice() {
+
+        Price price = Price.builder().id(1L).variantId(1L).price(BigDecimal.valueOf(10000L)).currency("USD").createdAt(new Date()).createdBy("SYSTEM").build();
+
+        Mockito.when(priceRepository.findByVariantId(ArgumentMatchers.anyLong())).thenThrow(new RuntimeException());
+
+        Exception e = null;
+        try {
+
+            priceService.deletePrice(1L);
+
+        } catch (Exception ex) {
+
+            e = ex;
+
+        }
+
+        Assertions.assertNotNull(e);
+    }
 }

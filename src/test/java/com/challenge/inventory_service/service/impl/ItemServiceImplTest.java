@@ -4,6 +4,7 @@ import com.challenge.inventory_service.dto.request.CreateItemRequest;
 import com.challenge.inventory_service.dto.request.ItemRequestDto;
 import com.challenge.inventory_service.dto.request.PriceRequestDto;
 import com.challenge.inventory_service.dto.request.StockRequestDto;
+import com.challenge.inventory_service.dto.request.UpdateItemRequest;
 import com.challenge.inventory_service.dto.request.VariantRequestDto;
 import com.challenge.inventory_service.dto.response.ItemResponse;
 import com.challenge.inventory_service.dto.response.VariantResponseDto;
@@ -201,6 +202,130 @@ class ItemServiceImplTest {
             itemService.getItem(1L);
 
         }  catch (Exception ex) {
+
+            e = ex;
+
+        }
+
+        Assertions.assertNotNull(e);
+
+    }
+
+    @Test
+    void successDeleteItem() {
+        Mockito.when(itemRepository.findById(1L)).thenReturn(Optional.of(Item.builder().id(1L).itemName("T-Shirt Nike").itemDescription("T-Shirt dengan bahan kualitas baik").itemCategory("Pakaian Pria").itemSku("1872GNC0").createdAt(new Date()).createdBy("ADMIN").build()));
+        Mockito.doNothing().when(variantService).deleteVariant(Mockito.anyLong());
+        Mockito.doNothing().when(itemRepository).delete(Mockito.any(Item.class));
+
+        Exception e = null;
+
+        try {
+
+            itemService.deleteItem(1L);
+
+        } catch (Exception ex) {
+
+            e = ex;
+
+        }
+
+        Assertions.assertNull(e);
+    }
+
+    @Test
+    void successDeleteItemButWithEmptyResult() {
+        Mockito.when(itemRepository.findById(1L)).thenReturn(Optional.empty());
+
+        Exception e = null;
+
+        try {
+
+            itemService.deleteItem(1L);
+
+        } catch (Exception ex) {
+
+            e = ex;
+
+        }
+
+        Assertions.assertNull(e);
+    }
+
+    @Test
+    void failedDeleteItem() {
+        Mockito.when(itemRepository.findById(1L)).thenThrow(RuntimeException.class);
+
+        Exception e = null;
+
+        try {
+
+            itemService.deleteItem(1L);
+
+        } catch (Exception ex) {
+
+            e = ex;
+
+        }
+
+        Assertions.assertNotNull(e);
+    }
+
+    @Test
+    void successUpdateItem() {
+
+        Item item = Item.builder().id(1L).itemName("T-Shirt Nike").itemCategory("Pakaian Pria").itemDescription("Pakaian Santai Pria").itemSku("1910MSOUUN").createdAt(new Date()).createdBy("ADMIN").build();
+
+        UpdateItemRequest request = UpdateItemRequest.builder()
+                .item(item)
+                .variants(List.of(VariantResponseDto.builder()
+                        .variant(Variant.builder().id(1L).variantName("T-Shirt Nike").variantWeight(100).variantColor("Black").variantSize("XL").itemId(1L).build())
+                        .price(Price.builder().id(1L).price(BigDecimal.valueOf(150000L)).currency("IDR").build())
+                        .stock(Stock.builder().id(1L).variantId(1L).available(100L).book(0L).sold(0L).createdAt(new Date()).createdBy("ADMIN").build())
+                        .build()))
+                .referenceNumber(UUID.randomUUID().toString())
+                .build();
+
+        Mockito.when(itemRepository.saveAndFlush(ArgumentMatchers.any(Item.class))).thenReturn(item);
+        Mockito.when(variantService.updateVariant(ArgumentMatchers.any(UpdateItemRequest.class))).thenReturn(List.of(
+                VariantResponseDto.builder().variant(Variant.builder().id(1L).itemId(1L).variantName("Kobe Bryant 24").variantColor("Black").variantSize("XL").variantWeight(100).createdAt(new Date()).createdBy("ADMIN").build()).price(Price.builder().id(1L).variantId(1L).price(BigDecimal.valueOf(150000L)).currency("IDR").createdAt(new Date()).createdBy("ADMIN").build()).stock(Stock.builder().id(1L).variantId(1L).available(100L).book(0L).sold(0L).createdAt(new Date()).createdBy("ADMIN").build()).build()
+        ));
+
+        Mockito.when(itemRepository.findById(ArgumentMatchers.anyLong())).thenReturn(Optional.of(item));
+        Mockito.when(variantService.getVariantByItemId(ArgumentMatchers.anyLong())).thenReturn(List.of(
+                VariantResponseDto.builder().variant(Variant.builder().id(1L).itemId(1L).variantName("Kobe Bryant 24").variantColor("Black").variantSize("XL").variantWeight(100).createdAt(new Date()).createdBy("ADMIN").build()).price(Price.builder().id(1L).variantId(1L).price(BigDecimal.valueOf(150000L)).currency("IDR").createdAt(new Date()).createdBy("ADMIN").build()).stock(Stock.builder().id(1L).variantId(1L).available(100L).book(0L).sold(0L).createdAt(new Date()).createdBy("ADMIN").build()).build()
+        ));
+
+        ItemResponse result = itemService.updateItem(request);
+
+        Assertions.assertNotNull(result.getItem());
+        Assertions.assertEquals(1, result.getVariants().size());
+
+    }
+
+    @Test
+    void failedUpdateItem() {
+
+        Item item = Item.builder().id(1L).itemName("T-Shirt Nike").itemCategory("Pakaian Pria").itemDescription("Pakaian Santai Pria").itemSku("1910MSOUUN").createdAt(new Date()).createdBy("ADMIN").build();
+
+        UpdateItemRequest request = UpdateItemRequest.builder()
+                .item(item)
+                .variants(List.of(VariantResponseDto.builder()
+                        .variant(Variant.builder().id(1L).variantName("T-Shirt Nike").variantWeight(100).variantColor("Black").variantSize("XL").itemId(1L).build())
+                        .price(Price.builder().id(1L).price(BigDecimal.valueOf(150000L)).currency("IDR").build())
+                        .stock(Stock.builder().id(1L).variantId(1L).available(100L).book(0L).sold(0L).createdAt(new Date()).createdBy("ADMIN").build())
+                        .build()))
+                .referenceNumber(UUID.randomUUID().toString())
+                .build();
+
+        Mockito.when(itemRepository.saveAndFlush(ArgumentMatchers.any(Item.class))).thenThrow(RuntimeException.class);
+
+        Exception e = null;
+
+        try {
+
+            itemService.updateItem(request);
+
+        } catch (Exception ex) {
 
             e = ex;
 
